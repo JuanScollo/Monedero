@@ -23,21 +23,20 @@ public class Cuenta {
   }
 
   public void poner(double cuanto) {
-    validarMontoPostivo(cuanto);
+    validarMontoPositivo(cuanto);
     validarLimitesDeposicionDiario();
     registrarDeposito(cuanto);
   }
 
   public void sacar(double cuanto) {
     // se usa el metodo abstraido
-    validarMontoPostivo(cuanto);
+    validarMontoPositivo(cuanto);
     validarSaldoSuficiente(cuanto);
     validarLimiteExtraccionDiaria(cuanto);
     registrarExtraccion(cuanto);
   }
 
-  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
-    var movimiento = new Movimiento(fecha, cuanto, esDeposito);
+  public void agregarMovimiento(Movimiento movimiento) {
     movimientos.add(movimiento);
   }
 
@@ -65,7 +64,7 @@ public class Cuenta {
 
 
   // Se saco la logica de validar montos positvos del metodo poner
-  private void validarMontoPostivo(double cuanto){
+  private void validarMontoPositivo(double cuanto){
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
@@ -107,3 +106,5 @@ public class Cuenta {
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 }
+
+
