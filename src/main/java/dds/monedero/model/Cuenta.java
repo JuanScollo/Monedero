@@ -28,6 +28,42 @@ public class Cuenta {
     registrarDeposito(cuanto);
   }
 
+  public void sacar(double cuanto) {
+    // se usa el metodo abstraido
+    validarMontoPostivo(cuanto);
+    validarSaldoSuficiente(cuanto);
+    validarLimiteExtraccionDiaria(cuanto);
+    registrarExtraccion(cuanto);
+  }
+
+  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
+    var movimiento = new Movimiento(fecha, cuanto, esDeposito);
+    movimientos.add(movimiento);
+  }
+
+  public double getMontoExtraidoA(LocalDate fecha) {
+    return getMovimientos().stream()
+        .mapToDouble(movimiento -> movimiento.montoDeExtraccionDe(fecha))
+        .sum();
+  }
+
+  public List<Movimiento> getMovimientos() {
+    return movimientos;
+  }
+
+  public void setMovimientos(List<Movimiento> movimientos) {
+    this.movimientos = movimientos;
+  }
+
+  public double getSaldo() {
+    return saldo;
+  }
+
+  public void setSaldo(double saldo) {
+    this.saldo = saldo;
+  }
+
+
   // Se saco la logica de validar montos positvos del metodo poner
   private void validarMontoPostivo(double cuanto){
     if (cuanto <= 0) {
@@ -47,14 +83,6 @@ public class Cuenta {
   // Se saco la logica de crear un nuevo movimiento
   private void registrarDeposito(double cuanto) {
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
-  }
-
-  public void sacar(double cuanto) {
-    // se usa el metodo abstraido
-    validarMontoPostivo(cuanto);
-    validarSaldoSuficiente(cuanto);
-    validarLimiteExtraccionDiaria(cuanto);
-    registrarExtraccion(cuanto);
   }
 
   // Se saco la logica de validarSaldoSuficiente
@@ -78,33 +106,4 @@ public class Cuenta {
   private void registrarExtraccion(double cuanto) {
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
-  
-  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
-    var movimiento = new Movimiento(fecha, cuanto, esDeposito);
-    movimientos.add(movimiento);
-  }
-
-  public double getMontoExtraidoA(LocalDate fecha) {
-    return getMovimientos().stream()
-        .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
-        .mapToDouble(Movimiento::getMonto)
-        .sum();
-  }
-
-  public List<Movimiento> getMovimientos() {
-    return movimientos;
-  }
-
-  public void setMovimientos(List<Movimiento> movimientos) {
-    this.movimientos = movimientos;
-  }
-
-  public double getSaldo() {
-    return saldo;
-  }
-
-  public void setSaldo(double saldo) {
-    this.saldo = saldo;
-  }
-
 }

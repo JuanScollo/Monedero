@@ -1,6 +1,7 @@
 package dds.monedero.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Movimiento {
   private final LocalDate fecha;
@@ -15,6 +16,12 @@ public class Movimiento {
     this.monto = monto;
     this.esDeposito = esDeposito;
   }
+
+  // logica abstraida para getMontoExtraiudoA de Cuenta
+  public double montoDeExtraccionDe(LocalDate fecha){
+    return this.isExtraccion() && this.esDeLaFecha(fecha) ? this.getMonto() : 0.0;
+  }
+
 
   public double getMonto() {
     return monto;
