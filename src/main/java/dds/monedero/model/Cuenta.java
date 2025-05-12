@@ -62,7 +62,6 @@ public class Cuenta {
     this.saldo = saldo;
   }
 
-
   // Se saco la logica de validar montos positvos del metodo poner
   private void validarMontoPositivo(double cuanto){
     if (cuanto <= 0) {
@@ -74,8 +73,8 @@ public class Cuenta {
   private void validarLimitesDeposicionDiario() {
     if (getMovimientos().stream()
         .filter(movimiento -> movimiento.fueDepositado(LocalDate.now()))
-        .count() >= 3) {
-      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
+        .count() >= MAX_DEPOSITOS_DIARIOS) {
+      throw new MaximaCantidadDepositosException("Ya excedio los " + MAX_DEPOSITOS_DIARIOS + " depositos diarios");
     }
   }
 
@@ -94,10 +93,10 @@ public class Cuenta {
   // Se saco la logica de validar el limite de extraccion diaria
   private void validarLimiteExtraccionDiaria(double cuanto) {
     var montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
-    var limite = 1000 - montoExtraidoHoy;
+    var limite = LIMITE_EXTRACCION_DIARIA - montoExtraidoHoy;
     if (cuanto > limite) {
       throw new MaximoExtraccionDiarioException(
-          "No puede extraer mas de $ " + 1000 + " diarios, " + "límite: " + limite);
+          "No puede extraer mas de $ " + LIMITE_EXTRACCION_DIARIA + " diarios, " + "límite: " + limite);
     }
   }
 
@@ -113,5 +112,9 @@ public class Cuenta {
   public void decrementarSaldo(double monto) {
     this.saldo -= monto;
   }
+
+// Solucion a numeros magicos hardcodeados
+  private static final double LIMITE_EXTRACCION_DIARIA = 1000;
+  private static final int MAX_DEPOSITOS_DIARIOS = 3;
 }
 
