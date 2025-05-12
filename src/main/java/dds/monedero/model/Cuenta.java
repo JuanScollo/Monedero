@@ -24,9 +24,7 @@ public class Cuenta {
 
   public void poner(double cuanto) {
     validarMontoPostivo(cuanto);
-
     validarLimitesDeposicionDiario();
-
     registrarDeposito(cuanto);
   }
 
@@ -51,24 +49,36 @@ public class Cuenta {
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
   }
 
-
-
   public void sacar(double cuanto) {
-    if (cuanto <= 0) {
-      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
-    }
+    // se usa el metodo abstraido
+    validarMontoPostivo(cuanto);
+    validarSaldoSuficiente(cuanto);
+    validarLimiteExtraccionDiaria(cuanto);
+    registrarExtraccion(cuanto);
+  }
+
+  // Se saco la logica de validarSaldoSuficiente
+  private void validarSaldoSuficiente(double cuanto) {
     if (getSaldo() - cuanto < 0) {
       throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
     }
+  }
+
+  // Se saco la logica de validar el limite de extraccion diaria
+  private void validarLimiteExtraccionDiaria(double cuanto) {
     var montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
     var limite = 1000 - montoExtraidoHoy;
     if (cuanto > limite) {
       throw new MaximoExtraccionDiarioException(
           "No puede extraer mas de $ " + 1000 + " diarios, " + "límite: " + limite);
     }
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 
+  // Se abstrajo la logica de extraccion
+  private void registrarExtraccion(double cuanto) {
+    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+  }
+  
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
     var movimiento = new Movimiento(fecha, cuanto, esDeposito);
     movimientos.add(movimiento);
