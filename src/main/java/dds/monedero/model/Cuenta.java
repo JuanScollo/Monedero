@@ -23,18 +23,35 @@ public class Cuenta {
   }
 
   public void poner(double cuanto) {
+    validarMontoPostivo(cuanto);
+
+    validarLimitesDeposicionDiario();
+
+    registrarDeposito(cuanto);
+  }
+
+  // Se saco la logica de validar montos positvos del metodo poner
+  private void validarMontoPostivo(double cuanto){
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
+  }
 
+  // Se saco la logica de validar los limites de deposicion de poner
+  private void validarLimitesDeposicionDiario() {
     if (getMovimientos().stream()
         .filter(movimiento -> movimiento.fueDepositado(LocalDate.now()))
         .count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
+  }
 
+  // Se saco la logica de crear un nuevo movimiento
+  private void registrarDeposito(double cuanto) {
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
   }
+
+
 
   public void sacar(double cuanto) {
     if (cuanto <= 0) {
