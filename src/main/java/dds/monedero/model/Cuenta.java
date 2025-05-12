@@ -105,6 +105,13 @@ public class Cuenta {
   private void registrarExtraccion(double cuanto) {
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
-}
 
+  public void incrementarSaldo(double monto) {
+    this.saldo += monto;
+  }
+
+  public void decrementarSaldo(double monto) {
+    this.saldo -= monto;
+  }
+}
 

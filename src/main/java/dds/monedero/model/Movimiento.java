@@ -52,15 +52,14 @@ public class Movimiento {
   }
 
   public void agregateA(Cuenta cuenta) {
-    cuenta.setSaldo(calcularValor(cuenta));
     cuenta.agregarMovimiento(this);
   }
 
-  public double calcularValor(Cuenta cuenta) {
+  public void AplicarA(Cuenta cuenta) {
     if (esDeposito) {
-      return cuenta.getSaldo() + getMonto();
+      cuenta.incrementarSaldo(monto);
     } else {
-      return cuenta.getSaldo() - getMonto();
+      cuenta.decrementarSaldo(monto);
     }
   }
 }
