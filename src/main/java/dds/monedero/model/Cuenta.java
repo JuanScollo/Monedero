@@ -11,6 +11,8 @@ import java.util.List;
 
 public class Cuenta {
 
+  public static final double LIMITE_EXTRACCION_DIARIA = 1000;
+  public static final double MAX_DEPOSITOS_DIARIOS = 3;
   private double saldo = 0;
   private List<Movimiento> movimientos = new ArrayList<>();
 
@@ -80,8 +82,11 @@ public class Cuenta {
 
   // Se saco la logica de crear un nuevo movimiento
   private void registrarDeposito(double cuanto) {
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+    Movimiento movimiento = new Movimiento(LocalDate.now(), cuanto, true);
+    movimiento.agregateA(this);
+    movimiento.aplicarA(this);
   }
+
 
   // Se saco la logica de validarSaldoSuficiente
   private void validarSaldoSuficiente(double cuanto) {
@@ -102,7 +107,9 @@ public class Cuenta {
 
   // Se abstrajo la logica de extraccion
   private void registrarExtraccion(double cuanto) {
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+    Movimiento movimiento = new Movimiento(LocalDate.now(), cuanto, false);
+    movimiento.agregateA(this);
+    movimiento.aplicarA(this);
   }
 
   public void incrementarSaldo(double monto) {
@@ -112,9 +119,5 @@ public class Cuenta {
   public void decrementarSaldo(double monto) {
     this.saldo -= monto;
   }
-
-// Solucion a numeros magicos hardcodeados
-  private static final double LIMITE_EXTRACCION_DIARIA = 1000;
-  private static final int MAX_DEPOSITOS_DIARIOS = 3;
 }
 
