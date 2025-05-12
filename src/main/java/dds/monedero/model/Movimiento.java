@@ -55,7 +55,7 @@ public class Movimiento {
     cuenta.agregarMovimiento(this);
   }
 
-  public void AplicarA(Cuenta cuenta) {
+  public void aplicarA(Cuenta cuenta) {
     if (esDeposito) {
       cuenta.incrementarSaldo(monto);
     } else {
